@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Itens de Solução/">
+    <File Path=".gitignore" />
+  </Folder>
+  <Project Path="RestFlux.API/RestFlux.API.csproj" />
+  <Project Path="RestFlux.Application/RestFlux.Application.csproj" />
+  <Project Path="RestFlux.Domain/RestFlux.Domain.csproj" />
+  <Project Path="RestFlux.Infrastructure/RestFlux.Infrastructure.csproj" />
+</Solution>
