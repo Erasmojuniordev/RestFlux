@@ -12,7 +12,7 @@ using RestFlux.Infrastructure.Persistence;
 namespace RestFlux.Infrastructure.Migrations
 {
     [DbContext(typeof(RestFluxDbContext))]
-    [Migration("20260303224957_DeleteRestrictProduct")]
+    [Migration("20260303231305_DeleteRestrictProduct")]
     partial class DeleteRestrictProduct
     {
         /// <inheritdoc />
@@ -118,7 +118,7 @@ namespace RestFlux.Infrastructure.Migrations
                     b.HasOne("RestFlux.Domain.Entities.Product", null)
                         .WithMany()
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
