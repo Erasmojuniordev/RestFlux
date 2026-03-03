@@ -30,11 +30,11 @@ namespace RestFlux.Infrastructure.Persistence.Configuration
             builder.Property(oi => oi.OrderId)
                 .IsRequired();
 
-            // Relacionamento 1:1 com Product
+            // Relacionamento N:1 com Product
             builder.HasOne<Product>()
                 .WithMany()
                 .HasForeignKey(oi => oi.ProductId)
-                .OnDelete(DeleteBehavior.NoAction);
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
     }

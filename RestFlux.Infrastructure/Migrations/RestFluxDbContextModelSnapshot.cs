@@ -115,7 +115,7 @@ namespace RestFlux.Infrastructure.Migrations
                     b.HasOne("RestFlux.Domain.Entities.Product", null)
                         .WithMany()
                         .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
                 });
 
