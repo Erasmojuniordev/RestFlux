@@ -15,7 +15,7 @@ namespace RestFlux.Domain.Entities
         public string ProductName { get; private set; } // snapshot
         public decimal UnitPrice { get; private set; }
         public int Quantity { get; private set; }
-        public decimal TotalPrice => Quantity * UnitPrice;
+        public decimal TotalPrice { get; private set; }
 
         public OrderItem(int productId, string productName, decimal unitPrice, int quantity)
         {
@@ -27,6 +27,10 @@ namespace RestFlux.Domain.Entities
             UnitPrice = unitPrice;
             if (quantity <= 0) throw new ArgumentException("Quantity must be greater than zero.", nameof(quantity));
             Quantity = quantity;
+
+            TotalPrice = unitPrice * quantity;
         }
+
+        private OrderItem() { } // EF Core retornar este construtor sem executar o calculo de TotalPrice
     }
 }

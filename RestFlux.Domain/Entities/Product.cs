@@ -11,6 +11,7 @@ namespace RestFlux.Domain.Entities
         public int Id { get; private set; }
         public string Name { get; private set; }
         public decimal Price { get; private set; }
+        public bool isActive = true;
 
         public Product(string name,decimal price)
         {
@@ -24,6 +25,11 @@ namespace RestFlux.Domain.Entities
         {
             if (newPrice < 0) throw new ArgumentException("Price cannot be negative.", nameof(newPrice));
             Price = newPrice;
+        }
+
+        public void Deactivate()
+        {
+            isActive = false;
         }
     }
 }
