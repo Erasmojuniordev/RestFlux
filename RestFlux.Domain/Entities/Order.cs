@@ -22,19 +22,48 @@ namespace RestFlux.Domain.Entities
             Status = OrderStatus.Pending;
         }
 
-        public void AddOrderItem(OrderItem item)
+        public void AddOrderItem(Product product, int quantity)
         {
-            if (item == null) throw new ArgumentNullException(nameof(item));
-            if (Status == OrderStatus.Delivered || Status == OrderStatus.Cancelled) throw new InvalidOperationException("Cannot add items to a delivered or canceled order.");
-            _items.Add(item);
+            if (Status == OrderStatus.Delivered || Status == OrderStatus.Cancelled || Status == OrderStatus.Paid) throw new InvalidOperationException("Cannot add items to a delivered or canceled order.");
+            var existingItem = _items.FirstOrDefault(i => i.ProductId == product.Id);
 
-            TotalAmount += _items.Sum(i => i.TotalPrice);
+            if (existingItem != null)
+            {
+                existingItem.ChangeItemQuantity(existingItem.Quantity + quantity);
+            }
+            else
+            {
+                var newItem = new OrderItem(product, quantity);
+                
+                _items.Add(newItem);
+            }
+
+            RecalculateTotalAmount();
+        }
+
+        public void ChangeItemQuantity(int productId, int newQuantity)
+        {
+            var item = _items.FirstOrDefault(i => i.ProductId == productId);
+
+            if (item == null) throw new ArgumentException("Product not found in the order.", nameof(productId));
+            if (Status == OrderStatus.Delivered || Status == OrderStatus.Cancelled || Status == OrderStatus.Paid) throw new InvalidOperationException("Cannot change item quantity for a delivered or canceled order.");
+
+            item.ChangeItemQuantity(newQuantity);
+            RecalculateTotalAmount();
+        }
+
+        private void RecalculateTotalAmount()
+        {
+            TotalAmount = _items.Sum(i => i.TotalPrice);
         }
 
         // Metodos de validação para transições de status
         public void MarkAsPaid()
         {
+            if (!_items.Any()) throw new InvalidOperationException("Cannot pay an order without items.");
+
             if (Status != OrderStatus.Pending) throw new InvalidOperationException("Only pending orders can be marked as paid.");
+
             Status = OrderStatus.Paid;
         }
 
