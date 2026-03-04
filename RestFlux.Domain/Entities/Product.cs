@@ -11,7 +11,7 @@ namespace RestFlux.Domain.Entities
         public int Id { get; private set; }
         public string Name { get; private set; }
         public decimal Price { get; private set; }
-        public bool isActive = true;
+        public bool isActive { get; private set; } = true;
 
         public Product(string name,decimal price)
         {
