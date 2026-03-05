@@ -58,31 +58,43 @@ namespace RestFlux.Domain.Entities
         }
 
         // Metodos de validação para transições de status
+        public void StartPreparing()
+        {
+            if (Status != OrderStatus.Pending)
+                throw new InvalidOperationException("Only pending orders can be started.");
+            if (!_items.Any())
+                throw new InvalidOperationException("Cannot start an order without items.");
+            Status = OrderStatus.InProgress;
+        }
+
+        public void MarkAsReady()
+        {
+            if (Status != OrderStatus.InProgress)
+                throw new InvalidOperationException("Only in-progress orders can be marked as ready.");
+            Status = OrderStatus.Ready;
+        }
+
+        public void MarkAsDelivered()
+        {
+            if (Status != OrderStatus.Ready)
+                throw new InvalidOperationException("Only ready orders can be marked as delivered.");
+            Status = OrderStatus.Delivered;
+        }
+
         public void MarkAsPaid()
         {
-            if (!_items.Any()) throw new InvalidOperationException("Cannot pay an order without items.");
-
-            if (Status != OrderStatus.Pending) throw new InvalidOperationException("Only pending orders can be marked as paid.");
-
+            if (Status != OrderStatus.Delivered)
+                throw new InvalidOperationException("Only delivered orders can be marked as paid.");
+            if (!_items.Any())
+                throw new InvalidOperationException("Cannot pay an order without items.");
             Status = OrderStatus.Paid;
         }
 
         public void MarkAsCancelled()
         {
-            if (Status == OrderStatus.Completed || Status == OrderStatus.Delivered) throw new InvalidOperationException("Completed orders cannot be canceled");
+            if (Status == OrderStatus.Paid)
+                throw new InvalidOperationException("Paid orders cannot be cancelled.");
             Status = OrderStatus.Cancelled;
-        }
-
-        public void MarkAsDelivered()
-        {
-            if (Status != OrderStatus.Paid) throw new InvalidOperationException("Only paid orders can be marked as delivered.");
-            Status = OrderStatus.Delivered;
-        }
-
-        public void MarkAsCompleted()
-        {
-            if (Status != OrderStatus.Delivered) throw new InvalidOperationException("Only delivered orders can be marked as completed.");
-            Status = OrderStatus.Completed;
         }
     }
 }
