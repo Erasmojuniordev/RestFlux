@@ -58,33 +58,6 @@ namespace RestFlux.Domain.Entities
         }
 
         // Metodos de validação para transições de status
-        public void MarkAsPaid()
-        {
-            if (!_items.Any()) throw new InvalidOperationException("Cannot pay an order without items.");
-
-            if (Status != OrderStatus.Pending) throw new InvalidOperationException("Only pending orders can be marked as paid.");
-
-            Status = OrderStatus.Paid;
-        }
-
-        public void MarkAsCancelled()
-        {
-            if (Status == OrderStatus.Completed || Status == OrderStatus.Delivered) throw new InvalidOperationException("Completed orders cannot be canceled");
-            Status = OrderStatus.Cancelled;
-        }
-
-        public void MarkAsDelivered()
-        {
-            if (Status != OrderStatus.Paid) throw new InvalidOperationException("Only paid orders can be marked as delivered.");
-            Status = OrderStatus.Delivered;
-        }
-
-        public void MarkAsCompleted()
-        {
-            if (Status != OrderStatus.Delivered) throw new InvalidOperationException("Only delivered orders can be marked as completed.");
-            Status = OrderStatus.Completed;
-        }
-
         public void StartPreparing()
         {
             if (Status != OrderStatus.Pending)
