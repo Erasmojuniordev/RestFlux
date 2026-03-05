@@ -1,11 +1,21 @@
+using Microsoft.EntityFrameworkCore;
+using RestFlux.Infrastructure.Persistence;
+using RestFlux.Application.Interfaces;
+using RestFlux.Infrastructure.Repository;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
 builder.Services.AddControllers();
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// Conexao com o banco de dados
+builder.Services.AddDbContext<RestFluxDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Injeção de dependência para repositórios e serviços
+builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 
 var app = builder.Build();
 

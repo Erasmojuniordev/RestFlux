@@ -15,18 +15,29 @@ namespace RestFlux.Domain.Entities
         public string ProductName { get; private set; } // snapshot
         public decimal UnitPrice { get; private set; }
         public int Quantity { get; private set; }
-        public decimal TotalPrice => Quantity * UnitPrice;
+        public decimal TotalPrice { get; private set; }
 
-        public OrderItem(int productId, string productName, decimal unitPrice, int quantity)
+        public OrderItem(Product product, int quantity)
         {
-            if (productId <= 0) throw new ArgumentException("ProductId must be greater than zero.", nameof(productId));
-            ProductId = productId;
-            if (string.IsNullOrWhiteSpace(productName)) throw new ArgumentException("ProductName cannot be null or empty.", nameof(productName));
-            ProductName = productName;
-            if (unitPrice < 0) throw new ArgumentException("UnitPrice cannot be negative.", nameof(unitPrice));
-            UnitPrice = unitPrice;
+            if (product.Id <= 0) throw new ArgumentException("ProductId must be greater than zero.", nameof(product.Id));
+            ProductId = product.Id;
+            if (string.IsNullOrWhiteSpace(product.Name)) throw new ArgumentException("ProductName cannot be null or empty.", nameof(product.Name));
+            ProductName = product.Name;
+            if (product.Price < 0) throw new ArgumentException("UnitPrice cannot be negative.", nameof(product.Price));
+            UnitPrice = product.Price;
             if (quantity <= 0) throw new ArgumentException("Quantity must be greater than zero.", nameof(quantity));
             Quantity = quantity;
+
+            TotalPrice = UnitPrice * quantity;
         }
+
+        public void ChangeItemQuantity(int newQuantity)
+        {
+            Quantity = newQuantity;
+
+            TotalPrice = UnitPrice * newQuantity;
+        }
+
+        private OrderItem() { } // EF Core retornar este construtor sem executar o calculo de TotalPrice
     }
 }
